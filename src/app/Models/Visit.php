@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Visit extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'doctor_id', 'visit_date', 'visit_time', 'status', 'purpose', 'report'];
+    protected $fillable = ['user_id', 'doctor_id', 'visit_date', 'visit_time', 'status', 'purpose', 'report', 'duration_minutes'];
 
     public function user()
     {

@@ -22,7 +22,8 @@ class VisitFactory extends Factory
             'doctor_id' => \App\Models\Doctor::factory(),
             'visit_date' => $this->faker->dateTimeBetween('-1 month', '+1 month')->format('Y-m-d'),
             'visit_time' => $this->faker->time('H:i'),
-            'status' => $this->faker->randomElement(['planifiée', 'confirmée', 'réalisée', 'annulée']),
+            'status' => $this->faker->randomElement(['planifiee', 'realisee', 'annulee']),
+            'duration_minutes' => $this->faker->randomElement([15, 30, 45, 60]),
             'purpose' => $this->faker->sentence(),
         ];
     }

@@ -9,11 +9,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Doctor extends Model
 {
     use HasFactory;
-    protected $fillable = ['first_name', 'last_name', 'specialty', 'establishment_id'];
+    protected $fillable = ['first_name', 'last_name', 'specialty', 'establishment_id', 'address', 'phone', 'email', 'zone_id'];
 
     public function establishment()
     {
         return $this->belongsTo(Establishment::class);
+    }
+
+    public function zone()
+    {
+        return $this->belongsTo(Zone::class);
     }
 
     public function visits()

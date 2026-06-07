@@ -19,6 +19,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Define roles
         $roles = [
+            User::ROLE_ADMIN => 'Administrateur',
             User::ROLE_DELEGATE => 'Délégué Médical',
             User::ROLE_MANAGER => 'Manager',
             User::ROLE_PRO_SANTÉ => 'Professionnel de Santé',
@@ -90,6 +91,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'edit_visits',
         ]);
 
+        $adminRole = Role::findByName(User::ROLE_ADMIN, $guardName);
+        $adminRole->syncPermissions(Permission::all());
+
         // Create admin user
         $adminUser = User::firstOrCreate(
             ['email' => 'admin@medical.com'],
@@ -97,20 +101,30 @@ class RolesAndPermissionsSeeder extends Seeder
                 'name' => 'Administrator',
                 'password' => Hash::make('admin123'),
                 'phone' => '+33612345678',
-                'role' => User::ROLE_MANAGER,
+                'role' => User::ROLE_ADMIN,
                 'is_active' => true,
             ]
         );
 
-        $adminUser->assignRole(User::ROLE_MANAGER);
+        $adminUser->assignRole(User::ROLE_ADMIN);
 
-        // Create test users for each role
-        $this->createTestUser('delegate@medical.com', 'Delegate User', User::ROLE_DELEGATE);
-        $this->createTestUser('manager@medical.com', 'Manager User', User::ROLE_MANAGER);
-        $this->createTestUser('pro@medical.com', 'Pro Santé User', User::ROLE_PRO_SANTÉ);
+        // Create 2 managers
+        for ($i = 1; $i <= 2; $i++) {
+            $this->createTestUser("manager{$i}@medical.com", "Manager User {$i}", User::ROLE_MANAGER);
+        }
+
+        // Create 3 delegues
+        for ($i = 1; $i <= 3; $i++) {
+            $this->createTestUser("delegate{$i}@medical.com", "Delegate User {$i}", User::ROLE_DELEGATE, $i);
+        }
+
+        // Create 5 praticiens
+        for ($i = 1; $i <= 5; $i++) {
+            $this->createTestUser("pro{$i}@medical.com", "Pro Santé User {$i}", User::ROLE_PRO_SANTÉ, ($i % 5) + 1);
+        }
     }
 
-    private function createTestUser(string $email, string $name, string $role): void
+    private function createTestUser(string $email, string $name, string $role, ?int $zoneId = null): void
     {
         $user = User::firstOrCreate(
             ['email' => $email],
@@ -120,6 +134,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'phone' => '+33612345678',
                 'role' => $role,
                 'is_active' => true,
+                'zone_id' => $zoneId,
+                'registration_number' => 'MAT-' . rand(1000, 9999),
             ]
         );
         

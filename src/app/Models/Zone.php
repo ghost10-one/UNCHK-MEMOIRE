@@ -1,23 +1,9 @@
 <?php
 
-/**
- * ============================================================
- * SPRINT 1 — AB (Abibou Ndione)
- * Modèle Zone + scope parDelegue()
- * Carte #3 — hasMany Praticiens · hasMany Users
- *             scope parDelegue()
- * Checklist : seeder zones · test scope · vérifier cascade
- * ============================================================
- */
-
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Zone extends Model
 {
@@ -119,4 +105,10 @@ class Zone extends Model
     {
         return "{$this->nom} ({$this->region})";
     }
+}
+    protected $fillable = [
+        'name',
+        'region',
+        'postal_code',
+    ];
 }

@@ -11,13 +11,14 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'role', 'is_active'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'role', 'is_active', 'zone_id', 'registration_number', 'grade', 'assignment_date'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
+    const ROLE_ADMIN = 'admin';
     const ROLE_DELEGATE = 'delegate';
     const ROLE_MANAGER = 'manager';
     const ROLE_PRO_SANTÉ = 'pro_santé';
@@ -33,6 +34,11 @@ class User extends Authenticatable
             'locked_until' => 'datetime',
             'is_active' => 'boolean',
         ];
+    }
+
+    public function zone()
+    {
+        return $this->belongsTo(Zone::class);
     }
 
     public function auditLogs()
@@ -66,15 +72,5 @@ class User extends Authenticatable
         $this->failed_login_attempts = 0;
         $this->locked_until = null;
         $this->save();
-    }
-
-    public function hasRole(string $role): bool
-    {
-        return $this->role === $role;
-    }
-
-    public function hasAnyRole(array $roles): bool
-    {
-        return in_array($this->role, $roles);
     }
 }

@@ -106,9 +106,3 @@ class Zone extends Model
         return "{$this->nom} ({$this->region})";
     }
 }
-    protected $fillable = [
-        'name',
-        'region',
-        'postal_code',
-    ];
-}

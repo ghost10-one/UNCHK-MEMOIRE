@@ -2,39 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-class Visit extends Model
-{
-    use HasFactory;
-    protected $fillable = ['user_id', 'doctor_id', 'visit_date', 'visit_time', 'status', 'purpose', 'report', 'duration_minutes'];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function doctor()
-    {
-        return $this->belongsTo(Doctor::class);
-    }
-}
-
-
-/**
- * ============================================================
- * SPRINT 1 — AB (Abibou Ndione)
- * Modèle Visite + relations + scopes
- * Carte #1 — belongsTo User (délégué) · belongsTo Praticien
- *             scopes: parDelegue(), duMois()
- * Checklist : factory Visite · test relations · scope filtre
- * ============================================================
- */
-
-namespace App\Models;
-
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

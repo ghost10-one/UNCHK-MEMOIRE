@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Visit;
+use App\Models\Visite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,22 +18,22 @@ class DashboardController extends Controller
 
         // Stats for the dashboard
         $stats = [
-            'visits_today' => Visit::where('user_id', $user->id)->whereDate('visit_date', $today)->count(),
-            'visits_week' => Visit::where('user_id', $user->id)
-                ->whereBetween('visit_date', [now()->startOfWeek(), now()->endOfWeek()])
+            'visits_today' => Visite::where('delegue_id', $user->id)->whereDate('date_visite', $today)->count(),
+            'visits_week' => Visite::where('delegue_id', $user->id)
+                ->whereBetween('date_visite', [now()->startOfWeek(), now()->endOfWeek()])
                 ->count(),
-            'pending_reports' => Visit::where('user_id', $user->id)
-                ->where('status', 'réalisée')
-                ->whereNull('report')
+            'pending_reports' => Visite::where('delegue_id', $user->id)
+                ->where('statut', 'realisee')
+                ->whereNull('compte_rendu')
                 ->count(),
             'completion_rate' => $this->getCompletionRate($user->id),
         ];
 
         // Upcoming visits for today
-        $upcomingVisits = Visit::with(['doctor.establishment'])
-            ->where('user_id', $user->id)
-            ->whereDate('visit_date', $today)
-            ->orderBy('visit_time')
+        $upcomingVisits = Visite::with(['praticien'])
+            ->where('delegue_id', $user->id)
+            ->whereDate('date_visite', $today)
+            ->orderBy('date_visite')
             ->get();
 
         return view('dashboard', compact('stats', 'upcomingVisits'));
@@ -41,15 +41,15 @@ class DashboardController extends Controller
 
     private function getCompletionRate($userId)
     {
-        $total = Visit::where('user_id', $userId)
-            ->whereMonth('visit_date', now()->month)
+        $total = Visite::where('delegue_id', $userId)
+            ->whereMonth('date_visite', now()->month)
             ->count();
         
         if ($total === 0) return 0;
 
-        $completed = Visit::where('user_id', $userId)
-            ->whereMonth('visit_date', now()->month)
-            ->where('status', 'réalisée')
+        $completed = Visite::where('delegue_id', $userId)
+            ->whereMonth('date_visite', now()->month)
+            ->where('statut', 'realisee')
             ->count();
 
         return round(($completed / $total) * 100);

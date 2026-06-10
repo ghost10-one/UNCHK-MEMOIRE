@@ -22,9 +22,11 @@ class VisiteRequest extends FormRequest
         return [
             'praticien_id' => ['required', 'exists:praticiens,id'],
             'date_visite' => ['required', 'date'],
+            'heure_debut' => ['nullable', 'date_format:H:i'],
             'statut' => ['required', 'string', 'in:planifiee,confirmee,en_cours,realisee,annulee,manquee'],
             'notes' => ['nullable', 'string'],
             'duree_min' => ['nullable', 'integer', 'min:1'],
+            'adresse_visite' => ['nullable', 'string'],
         ];
     }
 

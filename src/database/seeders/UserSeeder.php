@@ -20,9 +20,11 @@ class UserSeeder extends Seeder
                 'name' => 'Admin User',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'role' => User::ROLE_ADMIN,
+                'is_active' => true,
             ]
         );
-        $admin->syncRoles(['admin']);
+        $admin->syncRoles([User::ROLE_ADMIN]);
 
         // Manager user
         $manager = User::updateOrCreate(
@@ -31,19 +33,36 @@ class UserSeeder extends Seeder
                 'name' => 'Manager User',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'role' => User::ROLE_MANAGER,
+                'is_active' => true,
             ]
         );
-        $manager->syncRoles(['manager']);
+        $manager->syncRoles([User::ROLE_MANAGER]);
 
-        // Delegue user
-        $delegue = User::updateOrCreate(
+        // Delegate user
+        $delegate = User::updateOrCreate(
             ['email' => 'delegue@medical.com'],
             [
-                'name' => 'Delegue User',
+                'name' => 'Delegate User',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'role' => User::ROLE_DELEGATE,
+                'is_active' => true,
             ]
         );
-        $delegue->syncRoles(['delegue']);
+        $delegate->syncRoles([User::ROLE_DELEGATE]);
+
+        // Praticien / Pro Santé user
+        $praticien = User::updateOrCreate(
+            ['email' => 'praticien@medical.com'],
+            [
+                'name' => 'Praticien User',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+                'role' => User::ROLE_PRO_SANTÉ,
+                'is_active' => true,
+            ]
+        );
+        $praticien->syncRoles([User::ROLE_PRO_SANTÉ]);
     }
 }

@@ -2,84 +2,131 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CampaignRequest;
 use App\Models\Campaign;
+use App\Models\User;
+use App\Models\Zone;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class CampaignController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        Gate::authorize('viewAny', Campaign::class);
+
+        $query = Campaign::with(['delegue', 'zone']);
+
+        if ($request->filled('zone_id')) {
+            $query->where('zone_id', $request->input('zone_id'));
+        }
+
+        if ($request->filled('delegue_id')) {
+            $query->where('delegue_id', $request->input('delegue_id'));
+        }
+
+        if ($request->filled('date_debut')) {
+            $query->whereDate('date_debut', '>=', $request->input('date_debut'));
+        }
+
+        if ($request->filled('date_fin')) {
+            $query->whereDate('date_fin', '<=', $request->input('date_fin'));
+        }
+
+        if ($request->filled('statut')) {
+            $statut = $request->input('statut');
+            if ($statut === 'en_cours') {
+                $query->where('date_debut', '<=', now())->where('date_fin', '>=', now());
+            } elseif ($statut === 'a_venir') {
+                $query->where('date_debut', '>', now());
+            } elseif ($statut === 'terminees') {
+                $query->where('date_fin', '<', now());
+            }
+        }
+
+        $campaigns = $query->orderBy('date_debut', 'desc')->paginate(10)->withQueryString();
+        $zones = Zone::all();
+        $delegues = User::role('delegate')->get();
+
+        // Calculate KPIs
+        $activesCount = Campaign::where('date_debut', '<=', now())->where('date_fin', '>=', now())->count();
+        $totalObjectif = 350; // Fallback since no objectif column exists
+        $tauxReussite = 78; // Placeholder for logic
+        $joursRestants = 16; // Placeholder for logic
+
+        return view('campaigns.index', compact('campaigns', 'zones', 'delegues', 'activesCount', 'totalObjectif', 'tauxReussite', 'joursRestants'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        Gate::authorize('create', Campaign::class);
+
+        $zones = Zone::all();
+        $delegues = User::role('delegate')->get();
+
+        return view('campaigns.create', compact('zones', 'delegues'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CampaignRequest $request)
     {
-        //
-    }public function store(Request $request)
-{
-$validated = $request->validate([
-'titre' => 'required|string|max:255',
-'description' => 'nullable|string',
-'date_debut' => 'required|date|before_or_equal:date_fin',
-'date_fin' => 'required|date|after_or_equal:date_debut',
-'delegue_id' => 'required|exists:users,id',
-'zone_id' => 'required|exists:zones,id',
-'digital_support' => 'nullable|file|mimes:pdf,mp4|max:20480',
-]);
-if ($request->user()->role !== 'manager') {
-abort(403, 'Seul un manager peut créer une campagne.');
-}
-if ($request->hasFile('digital_support')) {
-$path = $request->file('digital_support')->store('campaign_supports', 'public');
-$validated['digital_support_path'] = $path;
-}
-Campaign::create($validated);
-return redirect()->route('campaigns.index')->with('success', 'Campagne créée !');
+        Gate::authorize('create', Campaign::class);
 
+        $validated = $request->validated();
 
-    /**
-     * Display the specified resource.
-     */
+        if ($request->hasFile('digital_support')) {
+            $validated['digital_support_path'] = $request->file('digital_support')->store('campaign_supports', 'public');
+        }
+
+        Campaign::create($validated);
+
+        return redirect()->route('campaigns.index')->with('success', 'Campagne créée !');
+    }
+
     public function show(Campaign $campaign)
     {
-        //
+        Gate::authorize('view', $campaign);
+
+        $campaign->load(['delegue', 'zone']);
+
+        return view('campaigns.show', compact('campaign'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Campaign $campaign)
     {
-        //
+        Gate::authorize('update', $campaign);
+
+        $zones = Zone::all();
+        $delegues = User::role('delegate')->get();
+
+        return view('campaigns.edit', compact('campaign', 'zones', 'delegues'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Campaign $campaign)
+    public function update(CampaignRequest $request, Campaign $campaign)
     {
-        //
+        Gate::authorize('update', $campaign);
+
+        $validated = $request->validated();
+
+        if ($request->hasFile('digital_support')) {
+            $validated['digital_support_path'] = $request->file('digital_support')->store('campaign_supports', 'public');
+        }
+
+        $campaign->update($validated);
+
+        return redirect()->route('campaigns.index')->with('success', 'Campagne mise à jour !');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Campaign $campaign)
     {
-        //
+        Gate::authorize('delete', $campaign);
+
+        if ($campaign->digital_support_path && Storage::disk('public')->exists($campaign->digital_support_path)) {
+            Storage::disk('public')->delete($campaign->digital_support_path);
+        }
+
+        $campaign->delete();
+
+        return redirect()->route('campaigns.index')->with('success', 'Campagne supprimée avec succès.');
     }
 }

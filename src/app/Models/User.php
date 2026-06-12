@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Campaign;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[Fillable(['name', 'email', 'password', 'phone', 'role', 'is_active', 'zone_id', 'registration_number', 'grade', 'assignment_date'])]
 #[Hidden(['password', 'remember_token'])]
@@ -49,6 +51,11 @@ class User extends Authenticatable
     public function passwordResetTokens()
     {
         return $this->hasMany(PasswordResetTokenExtended::class);
+    }
+
+    public function campaigns(): BelongsToMany
+    {
+        return $this->belongsToMany(Campaign::class, 'campaign_user', 'user_id', 'campaign_id');
     }
 
     public function isLocked(): bool

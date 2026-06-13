@@ -102,10 +102,10 @@ After seeding (automatic with migrations):
 
 | Email | Password | Role |
 |-------|----------|------|
-| admin@medical.com | admin123 | Manager |
-| delegate@medical.com | password123 | Delegate |
-| manager@medical.com | password123 | Manager |
-| pro@medical.com | password123 | Pro Santé |
+| admin@medical.com | password123 | Manager |
+| delegue@medical.com | password | Delegate |
+| manager@medical.com | password| Manager |
+| praticien@medical.com | password | Pro Santé |
 
 ---
 

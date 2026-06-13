@@ -4,6 +4,7 @@
             {{ __('Manager Analytics') }}
         </h2>
     </x-slot>
+    <!-- mfmff -->
 
     @php
         $campaignsCount = \App\Models\Campaign::count();

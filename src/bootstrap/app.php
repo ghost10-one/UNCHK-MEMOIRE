@@ -23,6 +23,16 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('manager')
                 ->name('manager.')
                 ->group(base_path('routes/manager.php'));
+
+            Route::middleware(['web', 'auth', 'role:delegate'])
+                ->prefix('delegate')
+                ->name('delegate.')
+                ->group(base_path('routes/delegate.php'));
+
+            Route::middleware(['web', 'auth', 'role:pro_santé'])
+                ->prefix('praticien')
+                ->name('praticien.')
+                ->group(base_path('routes/praticien.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

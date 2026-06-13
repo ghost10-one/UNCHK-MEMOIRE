@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Campaign;
 use App\Models\User;
 use App\Models\Visit;
+use App\Policies\CampaignPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\VisitPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -25,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Campaign::class, CampaignPolicy::class);
         Gate::policy(Visit::class, VisitPolicy::class);
     }
 }

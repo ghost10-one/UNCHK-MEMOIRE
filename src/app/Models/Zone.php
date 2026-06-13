@@ -12,9 +12,9 @@ class Zone extends Model
     protected $table = 'zones';
 
     protected $fillable = [
-        'nom',
+        'name',
         'region',
-        'code_postal',
+        'postal_code',
         'ville_principale',
         'latitude',
         'longitude',
@@ -103,6 +103,11 @@ class Zone extends Model
 
     public function getNomCompletAttribute(): string
     {
-        return "{$this->nom} ({$this->region})";
+        return "{$this->name} ({$this->region})";
+    }
+
+    public function getNomAttribute(): string
+    {
+        return $this->name;
     }
 }

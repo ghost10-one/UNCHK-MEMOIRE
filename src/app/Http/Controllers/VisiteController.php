@@ -17,18 +17,42 @@ class VisiteController extends Controller
     {
         $query = Visite::avecRelations(); // Eager loading: with('praticien', 'delegue')
         
-        // Ensure user sees only their own visits if they are a delegate
-        // Or if you have a specific role check, you can do it here. 
-        // For now, assuming standard user sees their own.
-        // $query->where('delegue_id', Auth::id()); 
+        // Count stats for tabs
+        $stats = [
+            'toutes' => (clone $query)->count(),
+            'planifiee' => (clone $query)->whereIn('statut', ['planifiee', 'confirmee', 'en_cours'])->count(),
+            'realisee' => (clone $query)->where('statut', 'realisee')->count(),
+            'annulee' => (clone $query)->whereIn('statut', ['annulee', 'manquee'])->count(),
+        ];
 
+        // Filters
         if ($request->filled('date')) {
             $query->whereDate('date_visite', $request->input('date'));
         }
 
+        if ($request->filled('statut')) {
+            $statut = $request->input('statut');
+            if ($statut === 'planifiee') {
+                $query->whereIn('statut', ['planifiee', 'confirmee', 'en_cours']);
+            } elseif ($statut === 'realisee') {
+                $query->where('statut', 'realisee');
+            } elseif ($statut === 'annulee') {
+                $query->whereIn('statut', ['annulee', 'manquee']);
+            }
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('praticien', function ($q) use ($search) {
+                $q->where('nom', 'ILIKE', "%{$search}%")
+                  ->orWhere('prenom', 'ILIKE', "%{$search}%")
+                  ->orWhere('specialite', 'ILIKE', "%{$search}%");
+            });
+        }
+
         $visites = $query->orderBy('date_visite', 'desc')->paginate(10)->withQueryString();
 
-        return view('visites.index', compact('visites'));
+        return view('visites.index', compact('visites', 'stats'));
     }
 
     /**
@@ -36,8 +60,10 @@ class VisiteController extends Controller
      */
     public function create()
     {
-        $praticiens = Praticien::actifs()->get(); // Assuming 'actifs' scope exists
-        return view('visites.create', compact('praticiens'));
+        $praticiens = Praticien::actifs()->get();
+        $selectedPraticien = $praticiens->firstWhere('id', old('praticien_id'));
+
+        return view('visites.create', compact('praticiens', 'selectedPraticien'));
     }
 
     /**
@@ -46,14 +72,18 @@ class VisiteController extends Controller
     public function store(VisiteRequest $request)
     {
         $validated = $request->validated();
-        
-        // Add current logged in user as the delegue
-        $validated['delegue_id'] = Auth::id() ?? 1; // Fallback to 1 for testing if not auth
+
+        $validated['delegue_id'] = Auth::id() ?? 1;
+
+        if (empty($validated['adresse_visite'])) {
+            $praticien = Praticien::find($validated['praticien_id']);
+            $validated['adresse_visite'] = $praticien?->adresse_complete ?? $praticien?->etablissement;
+        }
 
         Visite::create($validated);
 
         return redirect()->route('visites.index')
-                         ->with('success', 'Rapport de visite enregistré avec succès.');
+                         ->with('success', 'Visite planifiée avec succès.');
     }
 
     /**

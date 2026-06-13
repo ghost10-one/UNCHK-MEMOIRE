@@ -4,7 +4,7 @@
             {{ __('Manager Analytics') }}
         </h2>
     </x-slot>
-    <!-- mfmff -->
+    <!-- m   cndmmdmd dkdkdkdknddfmff -->
 
     @php
         $campaignsCount = \App\Models\Campaign::count();
@@ -31,7 +31,7 @@
 
             <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Synthèse analytique</h3>
-                <p class="text-sm text-gray-500">Suivez la performance des campagnes et préparez les actions terrain.</p>
+                <p class="text-sm text-gray-500">Suivez la performance des campagnes et préparez les actions sur terrain.</p>
                 <div class="mt-6 grid gap-4 sm:grid-cols-2">
                     <div class="rounded-2xl bg-slate-50 p-4">
                         <p class="text-sm text-gray-600">Utilisez ces données pour prioriser les visites.</p>

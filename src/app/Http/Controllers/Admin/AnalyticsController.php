@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
-
+use App\Models\User;
 class AnalyticsController extends Controller
 {
     public function index(Request $request)
@@ -50,8 +50,18 @@ class AnalyticsController extends Controller
             return collect($out);
         });
 
-        $zones = Cache::remember('zones_list', 300, fn() => DB::table('zones')->select('id','name')->orderBy('name')->get());
+  $zones = Cache::remember('zones_list', 300, fn() => DB::table('zones')->select('id','name')->orderBy('name')->get());
 
-        return view('admin.analytics', compact('rows', 'zones', 'zone'));
-    }
+$delegues = User::role('delegate')
+->withCount('visites')
+->orderByDesc('visites_count')
+->get();
+
+return view('admin.analytics', compact(
+'rows',
+'zones',
+'zone',
+'delegues'
+));
 }
+}       

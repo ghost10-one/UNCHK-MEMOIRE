@@ -62,13 +62,21 @@
                           hover:bg-gray-300 transition">
                     ← Retour
                 </a>
-                <form action="{{ route('messages.archive', $message) }}" method="POST">
-                    @csrf @method('PATCH')
-                    <button class="bg-red-100 text-red-600 px-4 py-2 rounded-lg 
-                                   hover:bg-red-200 transition">
-                        🗄️ Archiver
-                    </button>
-                </form>
+                @if(!$message->is_archived)
+                    <form action="{{ route('messages.archive', $message) }}" method="POST">
+                        @csrf @method('PATCH')
+                        <button class="bg-red-100 text-red-600 px-4 py-2 rounded-lg hover:bg-red-200 transition">
+                            🗄️ Archiver
+                        </button>
+                    </form>
+                @else
+                    <form action="{{ route('messages.unarchive', $message) }}" method="POST">
+                        @csrf @method('PATCH')
+                        <button class="bg-green-100 text-green-600 px-4 py-2 rounded-lg hover:bg-green-200 transition">
+                            📬 Désarchiver
+                        </button>
+                    </form>
+                @endif
             </div>
         </div>
     </div>

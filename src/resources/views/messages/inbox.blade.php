@@ -11,6 +11,7 @@
                 ✉️ Nouveau message
             </a>
         </div>
+        
 
         {{-- Message de succès --}}
         @if(session('success'))

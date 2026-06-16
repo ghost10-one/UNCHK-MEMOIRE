@@ -6,6 +6,7 @@ use App\Models\Message;
 use App\Models\User;
 use App\Notifications\NewMessageNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -82,10 +83,22 @@ class MessageController extends Controller
     // Archiver un message
     public function archive(Message $message)
     {
-        $this->authorize('update', $message);
-        $message->update(['is_archived' => true]);
+        try {
+            $this->authorize('update', $message);
 
-        return back()->with('success', 'Message archivé.');
+            if ($message->receiver_id !== auth()->id()) {
+                Log::warning('Archive attempt by non-receiver', ['message_id' => $message->id, 'user_id' => auth()->id()]);
+                return back()->with('error', 'Vous n\'êtes pas autorisé à archiver ce message.');
+            }
+
+            $message->update(['is_archived' => true]);
+            Log::info('Message archived', ['message_id' => $message->id, 'user_id' => auth()->id()]);
+
+            return back()->with('success', 'Message archivé.');
+        } catch (\Exception $e) {
+            Log::error('Archive error', ['message_id' => $message->id, 'error' => $e->getMessage()]);
+            return back()->with('error', 'Une erreur est survenue lors de l\'archivage.');
+        }
     }
 
     // Messages archivés
@@ -102,12 +115,26 @@ class MessageController extends Controller
     // Désarchiver un message
     public function unarchive(Message $message)
     {
-        $this->authorize('update', $message);
-        
-        Message::where('id', $message->id)
-               ->update(['is_archived' => false]);
+        try {
+            $this->authorize('update', $message);
 
-        return back()->with('success', 'Message restauré.');
+            if ($message->receiver_id !== auth()->id()) {
+                \Illuminate\Support\Facades\Log::warning('Unarchive attempt by non-receiver', ['message_id' => $message->id, 'user_id' => auth()->id()]);
+                return back()->with('error', 'Vous n\'êtes pas autorisé à restaurer ce message.');
+            }
+
+            Message::where('id', $message->id)
+                   ->update(['is_archived' => false]);
+
+            \Illuminate\Support\Facades\Log::info('Message unarchived', ['message_id' => $message->id, 'user_id' => auth()->id()]);
+
+            $message->update(['is_archived' => false]);
+
+            return redirect()->route('messages.archived')->with('success', 'Message restauré.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Unarchive error', ['message_id' => $message->id, 'error' => $e->getMessage()]);
+            return redirect()->route('messages.archived')->with('error', 'Une erreur est survenue lors de la restauration.');
+        }
     }
 
     // Messages envoyés

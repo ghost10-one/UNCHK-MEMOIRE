@@ -13,7 +13,7 @@
 </div>
 
 <div class="mt-6">
-    <livewire:admin-dashboard />
+    <!-- <livewire:admin-dashboard /> -->
 </div>
 
 </div>

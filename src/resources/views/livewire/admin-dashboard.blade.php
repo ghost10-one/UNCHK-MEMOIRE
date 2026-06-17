@@ -14,9 +14,9 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">Zone</label>
             <select wire:model="zone_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 <option value="">Toutes</option>
-                @foreach($zones as $zone)
-                    <option value="{{ $zone->id }}">{{ $zone->name }}</option>
-                @endforeach
+                 @foreach($zones as $zone)
+
+@endforeach
             </select>
         </div>
 
@@ -30,27 +30,33 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <p class="text-sm font-medium text-gray-500">Visites totales</p>
-            <p class="text-3xl font-bold text-gray-900 mt-2">{{ optional($this->stats ?? null)['total_visites'] ?? '...' }}</p>
-        </div>
+     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+<p class="text-sm font-medium text-gray-500">Visites totales</p>
+<p class="text-3xl font-bold text-gray-900 mt-2">
+{{ $this->stats['total_visites'] ?? 0 }}
+</p>
+</div>
 
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <p class="text-sm font-medium text-gray-500">Visites réalisées</p>
-            <p class="text-3xl font-bold text-green-600 mt-2">{{ optional($this->stats ?? null)['visites_completees'] ?? '...' }}</p>
-        </div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+<p class="text-sm font-medium text-gray-500">Visites réalisées</p>
+<p class="text-3xl font-bold text-green-600 mt-2">
+{{ $this->stats['visites_completees'] ?? 0 }}
+</p>
+</div>
 
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <p class="text-sm font-medium text-gray-500">Visites en attente</p>
-            <p class="text-3xl font-bold text-amber-500 mt-2">{{ optional($this->stats ?? null)['visites_en_attente'] ?? '...' }}</p>
-        </div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+<p class="text-sm font-medium text-gray-500">Visites en attente</p>
+<p class="text-3xl font-bold text-amber-500 mt-2">
+{{ $this->stats['visites_en_attente'] ?? 0 }}
+</p>
+</div>
 
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <p class="text-sm font-medium text-gray-500">Taux de réalisation</p>
-            <p class="text-3xl font-bold text-indigo-600 mt-2">{{ optional($this->stats ?? null)['taux_completion'] ?? '...' }}%</p>
-        </div>
-    </div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+<p class="text-sm font-medium text-gray-500">Taux de réalisation</p>
+<p class="text-3xl font-bold text-indigo-600 mt-2">
+{{ $this->stats['taux_completion'] ?? 0 }}%
+</p>
+</div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
@@ -97,17 +103,21 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener('livewire:load', () => {
+    document.addEventListener('livewire:init', () => { 
         const visitsCtx = document.getElementById('adminVisitsChart').getContext('2d');
         const statusCtx = document.getElementById('adminStatusPie').getContext('2d');
         const trendCtx = document.getElementById('adminTrendChart').getContext('2d');
 
-        const visitsChart = new Chart(visitsCtx, {
-            type: 'line',
-            data: { labels: [], datasets: [{ label: 'Visites', data: [], borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.3 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-        });
-
+        const visitsChart =  new Chart(visitsCtx, {
+type: 'line',
+data: {
+ labels: @json($this->chartLabels),
+datasets: [{
+label: 'Visites',
+ data: @json($this->chartData)
+}]
+}
+});
         const statusChart = new Chart(statusCtx, {
             type: 'doughnut',
             data: { labels: [], datasets: [{ label: 'Statuts', data: [], backgroundColor: ['#6366f1', '#f59e0b', '#10b981', '#ef4444', '#6b7280'] }] },
@@ -120,19 +130,11 @@
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100, ticks: { callback: value => value + '%' } } } }
         });
 
-        const refreshCharts = () => {
-            visitsChart.data.labels = @this.get('chartLabels') || [];
-            visitsChart.data.datasets[0].data = @this.get('chartData') || [];
-            visitsChart.update();
+          const refreshCharts = () => {
+console.log('refresh lancé');
+};
 
-            statusChart.data.labels = @this.get('statusLabels') || [];
-            statusChart.data.datasets[0].data = @this.get('statusData') || [];
-            statusChart.update();
-
-            trendChart.data.labels = @this.get('trendLabels') || [];
-            trendChart.data.datasets[0].data = @this.get('trendData') || [];
-            trendChart.update();
-        };
+        
 
         refreshCharts();
         Livewire.hook('message.processed', refreshCharts);

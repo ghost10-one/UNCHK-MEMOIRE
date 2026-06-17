@@ -28,7 +28,12 @@ class AdminDashboard extends Component
         $this->end_date = request()->query('end_date') ?: Carbon::now()->format('Y-m-d');
         $this->zone_id = request()->query('zone_id');
         $this->produit = request()->query('produit');
-        $this->zones = Cache::remember('zones_list', 300, fn() => DB::table('zones')->select('id', 'name')->orderBy('name')->get());
+         $this->zones = DB::table('zones')
+->select('id', 'name')
+->orderBy('name')
+->get();
+
+
     }
 
     public function updated($property)
@@ -101,32 +106,30 @@ class AdminDashboard extends Component
         });
     }
 
-    public function getChartLabelsProperty(): array
-    {
-        $filters = $this->filters();
-        $cacheKey = sprintf('admin_dashboard_labels_%s_%s_z%s_p%s', $filters['start']->toDateString(), $filters['end']->toDateString(), $filters['zone'] ?: 'all', $filters['produit'] ?: 'all');
+     public function getChartLabelsProperty(): array
+{
+    $rows = $this->applyFilters(
+        DB::table('visites')
+            ->selectRaw("strftime('%Y-%m', date_visite) as mois, COUNT(id) as total_visites")
+            ->groupBy('mois')
+            ->orderBy('mois')
+    )->get();
 
-        return Cache::remember($cacheKey, 300, function () use ($filters) {
-            $rows = $this->applyFilters(DB::table('visites')->selectRaw("DATE_TRUNC('month', date_visite)::date as mois, COUNT(id) as total_visites"))
-                ->groupByRaw("DATE_TRUNC('month', date_visite)")
-                ->orderBy('mois')
-                ->get();
-
-            return $rows->map(fn($row) => Carbon::parse($row->mois)->format('Y-m'))->toArray();
-        });
-    }
-
+    return $rows->pluck('mois')->toArray();
+}
     public function getChartDataProperty(): array
     {
         $filters = $this->filters();
         $cacheKey = sprintf('admin_dashboard_data_%s_%s_z%s_p%s', $filters['start']->toDateString(), $filters['end']->toDateString(), $filters['zone'] ?: 'all', $filters['produit'] ?: 'all');
 
         return Cache::remember($cacheKey, 300, function () use ($filters) {
-            $rows = $this->applyFilters(DB::table('visites')->selectRaw("DATE_TRUNC('month', date_visite)::date as mois, COUNT(id) as total_visites"))
-                ->groupByRaw("DATE_TRUNC('month', date_visite)")
-                ->orderBy('mois')
-                ->get();
-
+  $rows = $this->applyFilters(
+DB::table('visites')
+->selectRaw("strftime('%Y-%m', date_visite) as mois, COUNT(id) as total_visites")
+->groupBy('mois')
+->orderBy('mois')
+)->get();
+  
             return $rows->map(fn($row) => (int) $row->total_visites)->toArray();
         });
     }
@@ -157,20 +160,10 @@ class AdminDashboard extends Component
         return $this->chartLabels;
     }
 
-    public function getTrendDataProperty(): array
-    {
-        $filters = $this->filters();
-        $cacheKey = sprintf('admin_dashboard_trend_%s_%s_z%s_p%s', $filters['start']->toDateString(), $filters['end']->toDateString(), $filters['zone'] ?: 'all', $filters['produit'] ?: 'all');
-
-        return Cache::remember($cacheKey, 300, function () use ($filters) {
-            $rows = $this->applyFilters(DB::table('visites')->selectRaw("DATE_TRUNC('month', date_visite)::date as mois, ROUND(COUNT(CASE WHEN statut = 'realisee' THEN 1 END)::numeric / NULLIF(COUNT(id),0) * 100,2) as taux_global"))
-                ->groupByRaw("DATE_TRUNC('month', date_visite)")
-                ->orderBy('mois')
-                ->get();
-
-            return $rows->map(fn($row) => (float) $row->taux_global)->toArray();
-        });
-    }
+     public function getTrendDataProperty(): array
+{
+    return [];
+}
 
     public function getTopDeleguesProperty()
     {

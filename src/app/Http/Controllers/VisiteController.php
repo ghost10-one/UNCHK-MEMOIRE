@@ -125,4 +125,9 @@ class VisiteController extends Controller
         return redirect()->route('visites.index')
                          ->with('success', 'Visite supprimée avec succès.');
     }
+
+    public function export() 
+    {
+        return Excel::download(new VisitesExport, 'visites-' . now()->format('Y-m-d') . '.xlsx');
+    }
 }

@@ -31,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Visit::class, VisitPolicy::class);
 
         \App\Models\Visite::observe(\App\Observers\VisiteObserver::class);
+        
     }
 }

@@ -124,6 +124,7 @@ class RolesAndPermissionsSeeder extends Seeder
         );
 
         $adminUser->assignRole(User::ROLE_ADMIN);
+        
 
         // Create 2 managers
         for ($i = 1; $i <= 2; $i++) {

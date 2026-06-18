@@ -10,6 +10,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/audit-logs', [\App\Http\Controllers\AuditLogController::class, 'index'])->middleware(['auth'])->name('audit.index');
 Route::get('/visites/export', [\App\Http\Controllers\RapportController::class, 'exportVisites'])->middleware(['auth'])->name('visites.export');
 
 Route::get('/download-pdf', \App\Http\Controllers\PdfController::class)->middleware(['auth'])->name('pdf.download');

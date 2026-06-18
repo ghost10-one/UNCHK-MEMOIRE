@@ -10,6 +10,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/dashboard/productivity', [\App\Http\Controllers\DashboardProductivityController::class, 'index'])->middleware(['auth'])->name('dashboard.productivity');
 Route::get('/audit-logs', [\App\Http\Controllers\AuditLogController::class, 'index'])->middleware(['auth'])->name('audit.index');
 Route::get('/visites/export', [\App\Http\Controllers\RapportController::class, 'exportVisites'])->middleware(['auth'])->name('visites.export');
 
@@ -24,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('praticiens', \App\Http\Controllers\PraticienController::class);
     Route::resource('campaigns', \App\Http\Controllers\CampaignController::class);
     Route::resource('visites', \App\Http\Controllers\VisiteController::class);
+
 
 });
 

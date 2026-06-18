@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Livewire\AdminDashboard;
 use App\Models\Campaign;
 use App\Models\User;
 use App\Models\Visit;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Message;
 use App\Policies\MessagePolicy;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,5 +34,10 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Campaign::class, CampaignPolicy::class);
         Gate::policy(Visit::class, VisitPolicy::class);
         Gate::policy(Message::class, MessagePolicy::class);
+
+        // Register Livewire components explicitly
+        Livewire::component('admin-dashboard', AdminDashboard::class);
+        \App\Models\Visite::observe(\App\Observers\VisiteObserver::class);
+        
     }
 }

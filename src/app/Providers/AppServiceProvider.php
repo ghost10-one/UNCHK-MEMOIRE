@@ -11,6 +11,8 @@ use App\Policies\UserPolicy;
 use App\Policies\VisitPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Message;
+use App\Policies\MessagePolicy;
 use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Campaign::class, CampaignPolicy::class);
         Gate::policy(Visit::class, VisitPolicy::class);
+        Gate::policy(Message::class, MessagePolicy::class);
 
         // Register Livewire components explicitly
         Livewire::component('admin-dashboard', AdminDashboard::class);

@@ -29,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Campaign::class, CampaignPolicy::class);
         Gate::policy(Visit::class, VisitPolicy::class);
+        
     }
 }

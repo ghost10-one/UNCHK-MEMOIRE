@@ -19,8 +19,8 @@ class RoleSeeder extends Seeder
         // Create roles
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $manager = Role::firstOrCreate(['name' => 'manager']);
-        $delegue = Role::firstOrCreate(['name' => 'delegue']);
-        $praticien = Role::firstOrCreate(['name' => 'praticien']);
+        $delegate = Role::firstOrCreate(['name' => 'delegate']);
+        $proSante = Role::firstOrCreate(['name' => 'pro_santé']);
 
         // Define permissions
         $permissions = [
@@ -64,7 +64,7 @@ class RoleSeeder extends Seeder
             'manage campaigns',
         ]);
 
-        $delegue->syncPermissions([
+        $delegate->syncPermissions([
             'access dashboard',
             'plan visits',
             'edit visits',
@@ -72,7 +72,7 @@ class RoleSeeder extends Seeder
             'view reports',
         ]);
 
-        $praticien->syncPermissions([
+        $proSante->syncPermissions([
             'access dashboard',
             'view reports',
         ]);

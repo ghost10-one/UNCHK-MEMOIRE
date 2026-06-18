@@ -40,6 +40,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'edit_users' => 'Edit Users',
             'delete_users' => 'Delete Users',
 
+            // Doctors & Establishments
+            'view_doctors' => 'View Doctors',
+            'manage_doctors' => 'Manage Doctors',
+            'manage_establishments' => 'Manage Establishments',
+
             // Visits
             'view_visits' => 'View Visits',
             'create_visits' => 'Create Visits',
@@ -49,6 +54,13 @@ class RolesAndPermissionsSeeder extends Seeder
             // Reports
             'view_reports' => 'View Reports',
             'create_reports' => 'Create Reports',
+            'validate_reports' => 'Validate Reports',
+
+            // Campaigns
+            'manage_campaigns' => 'Manage Campaigns',
+
+            // Analytics
+            'view_analytics' => 'View Analytics',
 
             // System
             'view_audit_logs' => 'View Audit Logs',
@@ -68,6 +80,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'view_visits',
             'create_visits',
             'edit_visits',
+            'create_reports',
+            'view_reports',
         ]);
 
         $managerRole = Role::findByName(User::ROLE_MANAGER, $guardName);
@@ -75,20 +89,23 @@ class RolesAndPermissionsSeeder extends Seeder
             'view_users',
             'create_users',
             'edit_users',
+            'manage_doctors',
+            'manage_establishments',
             'view_visits',
             'create_visits',
             'edit_visits',
             'delete_visits',
             'view_reports',
             'create_reports',
+            'validate_reports',
+            'manage_campaigns',
+            'view_analytics',
             'view_audit_logs',
         ]);
 
         $proSanteRole = Role::findByName(User::ROLE_PRO_SANTÉ, $guardName);
         $proSanteRole->syncPermissions([
-            'view_visits',
-            'create_visits',
-            'edit_visits',
+            'view_reports',
         ]);
 
         $adminRole = Role::findByName(User::ROLE_ADMIN, $guardName);

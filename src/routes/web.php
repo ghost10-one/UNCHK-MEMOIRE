@@ -10,6 +10,8 @@ Route::get('/', function () {
 
 Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/dashboard/productivity', [\App\Http\Controllers\DashboardProductivityController::class, 'index'])->middleware(['auth'])->name('dashboard.productivity');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -18,6 +20,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('praticiens', \App\Http\Controllers\PraticienController::class);
     Route::resource('campaigns', \App\Http\Controllers\CampaignController::class);
     Route::resource('visites', \App\Http\Controllers\VisiteController::class);
+
+
 });
 
 require __DIR__.'/auth.php';

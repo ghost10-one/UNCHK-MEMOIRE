@@ -15,6 +15,17 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    {{-- Lien Messagerie --}}
+<x-nav-link :href="route('messages.inbox')" 
+            :active="request()->routeIs('messages.*')">
+    📬 Messagerie
+    @if(auth()->user()->unreadNotifications->count() > 0)
+        <span class="ml-1 bg-red-500 text-white text-xs 
+                     px-2 py-0.5 rounded-full">
+            {{ auth()->user()->unreadNotifications->count() }}
+        </span>
+    @endif
+</x-nav-link>
                     <x-nav-link :href="route('visits.index')" :active="request()->routeIs('visits.*')">
                         {{ __('Visites') }}
                     </x-nav-link>
@@ -103,4 +114,48 @@
             </div>
         </div>
     </div>
+    {{-- Cloche notifications --}}
+<div class="relative" x-data="{ open: false }">
+    <button x-on:click="open = !open"
+            class="relative p-2 text-gray-500 hover:text-gray-700">
+        🔔
+        @if(auth()->user()->unreadNotifications->count() > 0)
+            <span class="absolute top-0 right-0 bg-red-500 text-white 
+                         text-xs px-1.5 py-0.5 rounded-full">
+                {{ auth()->user()->unreadNotifications->count() }}
+            </span>
+        @endif
+    </button>
+
+    {{-- Liste des notifications --}}
+    <div x-show="open"
+         x-on:click.outside="open = false"
+         class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 
+                rounded-lg shadow-lg z-50 border">
+        <div class="p-3 border-b">
+            <p class="font-semibold text-gray-800 dark:text-white">
+                🔔 Notifications
+            </p>
+        </div>
+        @forelse(auth()->user()->unreadNotifications->take(5) as $notification)
+            <a href="{{ $notification->data['url'] }}"
+               class="block px-4 py-3 hover:bg-gray-50 
+                      dark:hover:bg-gray-700 border-b">
+                <p class="text-sm font-semibold text-gray-800 dark:text-white">
+                    📬 {{ $notification->data['sender_name'] }}
+                </p>
+                <p class="text-xs text-gray-500">
+                    {{ $notification->data['subject'] }}
+                </p>
+                <p class="text-xs text-gray-400 mt-1">
+                    {{ $notification->created_at->diffForHumans() }}
+                </p>
+            </a>
+        @empty
+            <p class="text-center text-gray-500 text-sm py-4">
+                Aucune nouvelle notification
+            </p>
+        @endforelse
+    </div>
+</div>
 </nav>

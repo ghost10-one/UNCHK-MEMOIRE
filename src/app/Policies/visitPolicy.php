@@ -3,25 +3,29 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\visit;
+use App\Models\Visit;
 use Illuminate\Auth\Access\Response;
 
-class visitPolicy
+class VisitPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasAnyRole([User::ROLE_MANAGER, User::ROLE_DELEGATE, User::ROLE_PRO_SANTÉ]);
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, visit $visit): bool
+    public function view(User $user, Visit $visit): bool
     {
-        return false;
+        if ($user->hasRole(User::ROLE_MANAGER)) {
+            return true;
+        }
+
+        return $visit->user_id === $user->id;
     }
 
     /**
@@ -29,38 +33,30 @@ class visitPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('create_visits');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, visit $visit): bool
+    public function update(User $user, Visit $visit): bool
     {
-        return false;
+        if ($user->hasRole(User::ROLE_MANAGER)) {
+            return true;
+        }
+
+        return $user->can('edit_visits') && $visit->user_id === $user->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, visit $visit): bool
+    public function delete(User $user, Visit $visit): bool
     {
-        return false;
-    }
+        if ($user->hasRole(User::ROLE_MANAGER)) {
+            return true;
+        }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, visit $visit): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, visit $visit): bool
-    {
-        return false;
+        return $user->can('delete_visits') && $visit->user_id === $user->id;
     }
 }

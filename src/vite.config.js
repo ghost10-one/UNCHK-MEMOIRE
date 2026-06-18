@@ -8,4 +8,17 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    // AJOUTE CE BLOC CI-DESSOUS :
+    server: {
+        host: '0.0.0.0',
+        hmr: {
+            host: 'localhost',
+        },
+        watch: {
+            usePolling: true, // Force Docker à détecter les changements sous Windows
+        },
+    },
 });
+
+
+    

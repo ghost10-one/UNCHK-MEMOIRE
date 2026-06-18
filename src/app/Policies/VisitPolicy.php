@@ -3,29 +3,25 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Visit;
+use App\Models\visit;
 use Illuminate\Auth\Access\Response;
 
-class VisitPolicy
+class visitPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole([User::ROLE_MANAGER, User::ROLE_DELEGATE, User::ROLE_PRO_SANTÉ]);
+        return false;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Visit $visit): bool
+    public function view(User $user, visit $visit): bool
     {
-        if ($user->hasRole(User::ROLE_MANAGER)) {
-            return true;
-        }
-
-        return $visit->user_id === $user->id;
+        return false;
     }
 
     /**
@@ -33,30 +29,38 @@ class VisitPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_visits');
+        return false;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Visit $visit): bool
+    public function update(User $user, visit $visit): bool
     {
-        if ($user->hasRole(User::ROLE_MANAGER)) {
-            return true;
-        }
-
-        return $user->can('edit_visits') && $visit->user_id === $user->id;
+        return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Visit $visit): bool
+    public function delete(User $user, visit $visit): bool
     {
-        if ($user->hasRole(User::ROLE_MANAGER)) {
-            return true;
-        }
+        return false;
+    }
 
-        return $user->can('delete_visits') && $visit->user_id === $user->id;
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, visit $visit): bool
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, visit $visit): bool
+    {
+        return false;
     }
 }

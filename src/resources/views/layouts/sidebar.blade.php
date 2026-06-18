@@ -34,6 +34,14 @@
                 Tableau de bord
             </a>
 
+            <!-- Logs - view audit trail -->
+            <a href="{{ route('audit.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('audit.index') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50' }}">
+                <svg class="w-5 h-5 {{ request()->routeIs('audit.index') ? 'text-white' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11V7a4 4 0 00-8 0v4c0  2.517.391 4.933 1.112 7.218m17.518-11a13.917 13.917 0 01-1.112 7.218m-4.518-2.04l-.054-.09A13.916 13.916 0 0015 11V7a4 4 0 00-8 0v4c0 3.517 1.009 6.799 2.753 9.571m-3.44-2.04A13.916 13.916 0 0011 11V7a4 4 0 00-4-4H5a4 4 0 00-4 4v4c0 2.517.391 4.933 1.112 7.218"></path>
+                </svg>
+                Journal d'Audit
+            </a>
+            
             <!-- Calendrier - plan/edit visits -->
             @can('edit_visits')
             <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">

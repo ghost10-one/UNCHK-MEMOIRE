@@ -54,6 +54,26 @@ Réinitialiser
 <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
 <h3 class="text-lg font-semibold text-gray-800 mb-4">📈 Visites par Mois</h3>
 <canvas id="visitesParMoisChart"></canvas>
+    <!-- Statistiques Globales -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div class="p-4 bg-slate-50 rounded-2xl">
+            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider block">Distribués</span>
+            <span class="text-2xl font-bold text-blue-600">{{ $this->totalDistribue }}</span>
+        </div>
+        <div class="p-4 bg-slate-50 rounded-2xl">
+            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider block">Stock Restant</span>
+            <span class="text-2xl font-bold text-slate-700">{{ $this->totalRemaining }}</span>
+        </div>
+    </div>
+
+    <div class="p-4 rounded-2xl mb-4 {{ $this->alertStyle }} border border-current/10">
+        <span class="text-sm font-semibold">{{ $this->alertMessage }}</span>
+    </div>
+
+    <!-- Barre de Progression Horizontale -->
+    <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $this->progress }}%"></div>
+    </div>
 </div>
 
 <!-- Graphique Camembert : Distribution Statuts -->

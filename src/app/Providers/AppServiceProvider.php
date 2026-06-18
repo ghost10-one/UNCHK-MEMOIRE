@@ -34,5 +34,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Register Livewire components explicitly
         Livewire::component('admin-dashboard', AdminDashboard::class);
+        \App\Models\Visite::observe(\App\Observers\VisiteObserver::class);
+        
     }
 }

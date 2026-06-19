@@ -1,4 +1,4 @@
- <div class="bg-white rounded-lg shadow-lg p-6">
+<div class="bg-white rounded-lg shadow-lg p-6">
 <div class="mb-6">
 <h2 class="text-2xl font-bold text-gray-800 mb-4">📊 Monitoring Campagne</h2>
 
@@ -54,26 +54,6 @@ Réinitialiser
 <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
 <h3 class="text-lg font-semibold text-gray-800 mb-4">📈 Visites par Mois</h3>
 <canvas id="visitesParMoisChart"></canvas>
-    <!-- Statistiques Globales -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-        <div class="p-4 bg-slate-50 rounded-2xl">
-            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider block">Distribués</span>
-            <span class="text-2xl font-bold text-blue-600">{{ $this->totalDistribue }}</span>
-        </div>
-        <div class="p-4 bg-slate-50 rounded-2xl">
-            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider block">Stock Restant</span>
-            <span class="text-2xl font-bold text-slate-700">{{ $this->totalRemaining }}</span>
-        </div>
-    </div>
-
-    <div class="p-4 rounded-2xl mb-4 {{ $this->alertStyle }} border border-current/10">
-        <span class="text-sm font-semibold">{{ $this->alertMessage }}</span>
-    </div>
-
-    <!-- Barre de Progression Horizontale -->
-    <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $this->progress }}%"></div>
-    </div>
 </div>
 
 <!-- Graphique Camembert : Distribution Statuts -->
@@ -84,7 +64,7 @@ Réinitialiser
 </div>
 
 <!-- Top Délégués -->
-<div class="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-8">
+<div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
 <h3 class="text-lg font-semibold text-gray-800 mb-4">🏆 Top 5 Délégués</h3>
 <div class="overflow-x-auto">
 <table class="w-full text-sm">
@@ -113,50 +93,76 @@ Réinitialiser
 </table>
 </div>
 </div>
-
-<!-- Classement des Délégués -->
-<div class="bg-gray-50 rounded-lg p-4 border border-gray-200 mt-8">
-<h3 class="text-lg font-semibold text-gray-800 mb-4">🏅 Classement Complet des Délégués</h3>
-<div class="overflow-x-auto">
-<table class="w-full text-sm">
-<thead>
-<tr class="border-b border-gray-300 bg-gray-100">
-<th class="text-left py-3 px-4 font-semibold">Délégué</th>
-<th class="text-right py-3 px-4 font-semibold">Visites Totales</th>
-<th class="text-right py-3 px-4 font-semibold">Complétées</th>
-<th class="text-right py-3 px-4 font-semibold">Taux Réalisation</th>
-</tr>
-</thead>
-<tbody>
-@forelse($topDelegues as $delegue)
-<tr class="border-b border-gray-200 hover:bg-white transition">
-<td class="py-3 px-4 font-medium">{{ $delegue['name'] ?? 'N/A' }}</td>
-<td class="text-right py-3 px-4">
-<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">
-{{ $delegue['total_visites'] ?? 0 }}
-</span>
-</td>
-<td class="text-right py-3 px-4">
-<span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
-{{ $delegue['visites_completees'] ?? 0 }}
-</span>
-</td>
-<td class="text-right py-3 px-4">
-<span class="bg-gradient-to-r from-green-400 to-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-{{ $delegue['taux_realisation'] ?? 0 }}%
-</span>
-</td>
-</tr>
-@empty
-<tr>
-<td colspan="4" class="text-center py-4 text-gray-500">Aucun délégué trouvé</td>
-</tr>
-@endforelse
-</tbody>
-</table>
-</div>
-</div>
 </div>
 
 <!-- Chart.js Script -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+// Graphique Ligne : Visites par Mois
+const visitesParMoisCtx = document.getElementById('visitesParMoisChart');
+if (visitesParMoisCtx) {
+new Chart(visitesParMoisCtx, {
+type: 'line',
+data: {
+labels: {!! json_encode($visitesParMois['labels'] ?? []) !!},
+datasets: [{
+label: 'Visites',
+data: {!! json_encode($visitesParMois['data'] ?? []) !!},
+borderColor: '#3b82f6',
+backgroundColor: 'rgba(59, 130, 246, 0.1)',
+borderWidth: 2,
+fill: true,
+tension: 0.4,
+pointRadius: 4,
+pointBackgroundColor: '#3b82f6'
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: true,
+plugins: {
+legend: {
+display: true,
+position: 'top'
+}
+},
+scales: {
+y: {
+beginAtZero: true,
+ticks: {
+stepSize: 1
+}
+}
+}
+}
+});
+}
+
+// Graphique Camembert : Distribution Statuts
+const distributionStatutsCtx = document.getElementById('distributionStatutsChart');
+if (distributionStatutsCtx) {
+new Chart(distributionStatutsCtx, {
+type: 'doughnut',
+data: {
+labels: {!! json_encode($distributionStatuts['labels'] ?? []) !!},
+datasets: [{
+data: {!! json_encode($distributionStatuts['data'] ?? []) !!},
+backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#6b7280']
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: true,
+plugins: {
+legend: {
+display: true,
+position: 'bottom'
+}
+}
+}
+});
+}
+});
+</script>

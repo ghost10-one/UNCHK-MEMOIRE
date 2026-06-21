@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-})->name('dashboard');
+use App\Http\Controllers\Admin\DashboardController;
 
-Route::get('/analytics', function () {
-    return view('admin.analytics');
-})->name('analytics');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+use App\Http\Controllers\Admin\AnalyticsController;
+
+Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');

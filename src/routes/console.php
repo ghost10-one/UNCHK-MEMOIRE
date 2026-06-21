@@ -15,3 +15,9 @@ Schedule::job(new SendScheduledReportJob('Hebdomadaire'))->weeklyOn(1, '08:00');
 
 // Planification d'un rapport mensuel le 1er du mois à 08h30
 Schedule::job(new SendScheduledReportJob('Mensuel'))->monthlyOn(1, '08:30');
+// Schedule cleanup of audit logs daily at 2 AM
+Schedule::command('audit-logs:cleanup')
+    ->daily()
+    ->at('02:00')
+    ->onOneServer()
+    ->withoutOverlapping();

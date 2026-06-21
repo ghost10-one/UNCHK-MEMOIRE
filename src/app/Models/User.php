@@ -80,4 +80,9 @@ class User extends Authenticatable
         $this->locked_until = null;
         $this->save();
     }
+
+public function visites()
+{
+return $this->hasMany(Visite::class, 'delegue_id');
+}
 }

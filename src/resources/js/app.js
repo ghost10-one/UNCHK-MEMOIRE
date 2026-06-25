@@ -306,3 +306,4 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── Démarrer Alpine ───────────────────────────────────────────
 window.Alpine = Alpine;
 Alpine.start();
+ import './bootstrap';

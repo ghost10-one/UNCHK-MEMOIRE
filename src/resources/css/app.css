@@ -14,14 +14,14 @@
 /* ── Variables CSS Mode Clair ───────────────────────────────── */
 :root {
     --color-primary:       #1D9E75;
-    --color-primary-50:    #ECFAF5;
-    --color-primary-100:   #D0F3E7;
-    --color-primary-600:   #178060;
-    --color-secondary:     #2F6BFF;
+    --color-primary-50:    #ECFDF7;
+    --color-primary-100:   #D1FAE9;
+    --color-primary-600:   #157F5E;
+    --color-secondary:     #0EA5A5;
     --color-success:       #22C55E;
     --color-danger:        #EF4444;
     --color-warning:       #F59E0B;
-    --color-bg:            #F5F7FB;
+    --color-bg:            #F8F8FA;
     --color-surface:       #FFFFFF;
     --color-surface-2:     #F5F7FB;
     --color-surface-3:     #E8ECF4;
@@ -30,9 +30,9 @@
     --color-text-2:        #4A5568;
     --color-text-3:        #8A94A6;
     --sidebar-width:       256px;
-    --shadow-sm:  0 2px 8px rgba(29,158,117,0.08);
-    --shadow-md:  0 4px 20px rgba(29,158,117,0.12);
-    --shadow-lg:  0 8px 40px rgba(29,158,117,0.16);
+    --shadow-sm:  0 2px 8px rgba(15,23,42,0.04);
+    --shadow-md:  0 8px 24px rgba(15,23,42,0.08);
+    --shadow-lg:  0 18px 48px rgba(15,23,42,0.12);
     --radius:     16px;
     --radius-sm:  10px;
     --transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
@@ -87,8 +87,8 @@
     }
 
     ::selection {
-        background-color: #D0F3E7;
-        color: #12624A;
+        background-color: #D1FAE9;
+        color: #11543F;
     }
 }
 

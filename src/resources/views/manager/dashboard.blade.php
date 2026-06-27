@@ -55,4 +55,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h3 class="text-xl font-semibold text-gray-900 mb-4">Monitoring campagne</h3>
                 <x-campaign-monitoring />
-               <livewire:components.dashboard-overview />
+            </div>
+        </div>
+    </div>
+</x-app-layout>

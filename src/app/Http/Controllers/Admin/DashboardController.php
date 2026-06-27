@@ -12,6 +12,6 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        return view('livewire.campaign-monitoring');
+        return view('admin.dashboard');
     }
 }

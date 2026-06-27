@@ -39,129 +39,125 @@
                   border-r border-surface-tertiary dark:border-dark-border
                   flex flex-col shadow-sm transition-transform duration-300">
 
-        <div class="flex items-center gap-3 px-5 py-5 border-b border-surface-tertiary dark:border-dark-border flex-shrink-0">
-            <div class="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                </svg>
-            </div>
-            <span class="text-lg font-bold text-content dark:text-dark-text font-heading">MedRep</span>
-            <button @click="sidebarOpen = false"
-                    class="ml-auto md:hidden p-1 rounded-lg text-content-tertiary hover:text-content focus-ring"
-                    aria-label="Fermer le menu">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
+        <!-- Logo -->
+        <div class="flex items-center justify-between px-6 h-20 border-b border-slate-100/80 flex-shrink-0">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-2xl shadow-md shadow-blue-500/20">
+                    +
+                </div>
+                <span class="text-2xl font-extrabold text-slate-900 tracking-tight">MedRep</span>
+            </a>
+            
+            <!-- Close Sidebar Button (Mobile) -->
+            <button @click="sidebarOpen = false" class="md:hidden text-slate-400 hover:text-slate-600 p-1">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
 
         @auth
-        <div class="px-4 py-3 border-b border-surface-tertiary dark:border-dark-border flex-shrink-0">
-            <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-surface-secondary dark:hover:bg-dark-bg transition-colors">
-                <div class="w-9 h-9 bg-primary-100 dark:bg-primary-900/40 rounded-full flex items-center justify-center font-bold text-primary text-sm flex-shrink-0" aria-hidden="true">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-sm font-semibold text-content dark:text-dark-text truncate">{{ auth()->user()->name }}</p>
-                    <p class="text-xs text-content-tertiary dark:text-dark-muted capitalize">{{ auth()->user()->getRoleNames()->first() ?? 'Utilisateur' }}</p>
-                </div>
+        <!-- User Profile Mini -->
+        <div class="p-5 border-b border-slate-100/80 flex items-center gap-3 flex-shrink-0">
+            <div class="w-11 h-11 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-base shadow-sm">
+                {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 2)) }}
+            </div>
+            <div class="overflow-hidden">
+                <div class="text-sm font-bold text-slate-900 truncate tracking-tight">{{ Auth::user()->name ?? 'Utilisateur' }}</div>
+                <div class="text-xs font-medium text-slate-500 truncate capitalize">{{ Auth::user()->roles->first()->name ?? Auth::user()->role ?? 'Utilisateur' }}</div>
             </div>
         </div>
         @endauth
 
-        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-thin" aria-label="Menu principal">
+        <!-- Navigation -->
+        <nav class="p-4 space-y-1.5 flex-1 overflow-y-auto scrollbar-thin">
             @php
                 $user = auth()->user();
-                $dashboardRoute = 'dashboard';
-
-                if ($user?->hasRole(\App\Models\User::ROLE_ADMIN)) {
-                    $dashboardRoute = 'admin.dashboard';
-                } elseif ($user?->hasRole(\App\Models\User::ROLE_MANAGER)) {
-                    $dashboardRoute = 'manager.dashboard';
-                } elseif ($user?->hasRole(\App\Models\User::ROLE_DELEGATE)) {
-                    $dashboardRoute = 'delegate.dashboard';
-                } elseif ($user?->hasRole(\App\Models\User::ROLE_PRO_SANTÉ)) {
-                    $dashboardRoute = 'praticien.dashboard';
-                }
-
-                $icons = [
-                    'home' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
-                    'calendar' => 'M8 7V3m8 4V3M5 11h14M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z',
-                    'visits' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
-                    'users' => 'M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m6-4a4 4 0 11-8 0 4 4 0 018 0zm6 2a3 3 0 11-6 0 3 3 0 016 0z',
-                    'reports' => 'M9 17v-2m3 2v-4m3 4v-6M5 3h10l4 4v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z',
-                    'campaigns' => 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z',
-                    'map' => 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7',
-                    'bell' => 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9',
-                    'profile' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
-                    'settings' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.607 2.296.07 2.572-1.065zM15 12a3 3 0 11-6 0 3 3 0 016 0z',
-                ];
-
-                $links = [
-                    ['route' => $dashboardRoute, 'label' => 'Tableau de bord', 'icon' => $icons['home']],
-                ];
-
-                if ($user?->hasAnyRole([\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_MANAGER])) {
-                    $spacePrefix = $user?->hasRole(\App\Models\User::ROLE_ADMIN) ? 'admin' : 'manager';
-                    $links = array_merge($links, [
-                        ['route' => $spacePrefix.'.calendar', 'label' => 'Calendrier', 'icon' => $icons['calendar']],
-                        ['route' => 'visites.index', 'label' => 'Visites', 'icon' => $icons['visits']],
-                        ['route' => 'praticiens.index', 'label' => 'Praticiens', 'icon' => $icons['users']],
-                        ['route' => $spacePrefix.'.reports', 'label' => 'Rapports', 'icon' => $icons['reports']],
-                        ['route' => $spacePrefix.'.notifications', 'label' => 'Notifications', 'icon' => $icons['bell'], 'badge' => 3],
-                        ['route' => 'campaigns.index', 'label' => 'Campagnes', 'icon' => $icons['campaigns']],
-                        ['route' => $spacePrefix.'.analytics', 'label' => 'Analytics', 'icon' => $icons['reports']],
-                    ]);
-                } elseif ($user?->hasRole(\App\Models\User::ROLE_DELEGATE)) {
-                    $links = array_merge($links, [
-                        ['route' => 'visites.index', 'label' => 'Visites', 'icon' => $icons['visits']],
-                        ['route' => 'praticiens.index', 'label' => 'Carte & Tournées', 'icon' => $icons['map']],
-                        ['route' => 'campaigns.index', 'label' => 'Campagnes', 'icon' => $icons['campaigns']],
-                    ]);
-                } elseif ($user?->hasRole(\App\Models\User::ROLE_PRO_SANTÉ)) {
-                    $links = array_merge($links, [
-                        ['route' => 'visites.index', 'label' => 'Mes visites', 'icon' => $icons['visits']],
-                        ['route' => 'profile.edit', 'label' => 'Mon profil', 'icon' => $icons['profile']],
-                    ]);
-                }
-
-                $links[] = ['route' => 'profile.edit', 'label' => 'Paramètres', 'icon' => $icons['settings']];
+                $dashRoute = 'dashboard';
+                if ($user?->hasRole(\App\Models\User::ROLE_ADMIN)) { $dashRoute = 'admin.dashboard'; }
+                elseif ($user?->hasRole(\App\Models\User::ROLE_MANAGER)) { $dashRoute = 'manager.dashboard'; }
+                elseif ($user?->hasRole(\App\Models\User::ROLE_DELEGATE)) { $dashRoute = 'delegate.dashboard'; }
+                elseif ($user?->hasRole(\App\Models\User::ROLE_PRO_SANTÉ)) { $dashRoute = 'praticien.dashboard'; }
             @endphp
 
-            @foreach ($links as $link)
-                @if (Route::has($link['route']))
-                @php
-                    $routeRoot = explode('.', $link['route'])[0];
-                    $resourceRoute = in_array($routeRoot, ['visites', 'praticiens', 'campaigns', 'tournees'], true);
-                    $active = request()->routeIs($link['route']) || ($resourceRoute && request()->routeIs($routeRoot.'.*'));
-                @endphp
-                <a href="{{ route($link['route']) }}"
-                   class="nav-link {{ $active ? 'active' : '' }}"
-                   aria-current="{{ $active ? 'page' : 'false' }}">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $link['icon'] }}"/>
-                    </svg>
-                    <span>{{ $link['label'] }}</span>
-                    @if (! empty($link['badge']))
-                        <span class="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1.5 text-[10px] font-bold text-white">
-                            {{ $link['badge'] }}
-                        </span>
-                    @endif
-                </a>
-                @endif
-            @endforeach
+            <!-- Tableau de bord -->
+            <a href="{{ Route::has($dashRoute) ? route($dashRoute) : route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('*.dashboard') || request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="truncate">Tableau de bord</span>
+            </a>
+
+            <!-- Calendrier -->
+            <a href="{{ Route::has('calendrier.index') ? route('calendrier.index') : '#' }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('calendrier.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <span class="truncate">Calendrier</span>
+            </a>
+
+            <!-- Visites -->
+            @if(Route::has('visites.index'))
+            <a href="{{ route('visites.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('visites.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <span class="truncate">Visites</span>
+            </a>
+            @endif
+
+            <!-- Praticiens -->
+            @if(Route::has('praticiens.index'))
+            <a href="{{ route('praticiens.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('praticiens.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m6-4a4 4 0 11-8 0 4 4 0 018 0zm6 2a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="truncate">Praticiens</span>
+            </a>
+            @endif
+
+            <!-- Rapports -->
+            @if(Route::has('rapports.index'))
+            <a href="{{ route('rapports.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('rapports.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="truncate">Rapports</span>
+            </a>
+            @endif
+
+            <!-- Notifications / Messages -->
+            @if(Route::has('messages.inbox'))
+            <a href="{{ route('messages.inbox') }}" class="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('messages.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <div class="flex items-center gap-3 min-w-0">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    <span class="truncate">Notifications</span>
+                </div>
+                <span class="bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm flex-shrink-0">3</span>
+            </a>
+            @endif
+
+            <!-- Campagnes -->
+            @if(Route::has('campaigns.index'))
+            <a href="{{ route('campaigns.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('campaigns.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                <span class="truncate">Campagnes</span>
+            </a>
+            @endif
+
+            <!-- Productivité / Analytics -->
+            @php
+                $analyticsRoute = Route::has('admin.analytics') ? 'admin.analytics' : (Route::has('manager.analytics') ? 'manager.analytics' : 'dashboard.productivity');
+            @endphp
+            @if(Route::has($analyticsRoute))
+            <a href="{{ route($analyticsRoute) }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('*.analytics') || request()->routeIs('dashboard.productivity') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <span class="truncate">Analytics</span>
+            </a>
+            @endif
+
+            <!-- Paramètres -->
+            <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('profile.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.607 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="truncate">Paramètres</span>
+            </a>
         </nav>
 
-        <div class="p-3 border-t border-surface-tertiary dark:border-dark-border flex-shrink-0">
+        <!-- Déconnexion -->
+        <div class="p-4 border-t border-slate-100/80 flex-shrink-0">
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit"
-                        class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-danger hover:bg-danger-light dark:hover:bg-red-900/20 transition-colors focus-ring"
-                        aria-label="Se déconnecter de MedRep">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                    </svg>
-                    Déconnexion
+                <button type="submit" class="flex items-center gap-3 px-4 py-3 w-full text-left rounded-xl text-sm font-bold text-red-600 hover:bg-red-50 transition-colors">
+                    <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    <span class="truncate">Déconnexion</span>
                 </button>
             </form>
         </div>

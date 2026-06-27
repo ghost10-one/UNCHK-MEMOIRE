@@ -108,9 +108,14 @@ class AdminDashboard extends Component
 
      public function getChartLabelsProperty(): array
 {
+    $driver = DB::connection()->getDriverName();
+    $dateFormat = $driver === 'sqlite'
+        ? "strftime('%Y-%m', date_visite)"
+        : "to_char(date_visite, 'YYYY-MM')";
+
     $rows = $this->applyFilters(
         DB::table('visites')
-            ->selectRaw("strftime('%Y-%m', date_visite) as mois, COUNT(id) as total_visites")
+            ->selectRaw("{$dateFormat} as mois, COUNT(id) as total_visites")
             ->groupBy('mois')
             ->orderBy('mois')
     )->get();
@@ -123,9 +128,14 @@ class AdminDashboard extends Component
         $cacheKey = sprintf('admin_dashboard_data_%s_%s_z%s_p%s', $filters['start']->toDateString(), $filters['end']->toDateString(), $filters['zone'] ?: 'all', $filters['produit'] ?: 'all');
 
         return Cache::remember($cacheKey, 300, function () use ($filters) {
+            $driver = DB::connection()->getDriverName();
+            $dateFormat = $driver === 'sqlite'
+                ? "strftime('%Y-%m', date_visite)"
+                : "to_char(date_visite, 'YYYY-MM')";
+
   $rows = $this->applyFilters(
 DB::table('visites')
-->selectRaw("strftime('%Y-%m', date_visite) as mois, COUNT(id) as total_visites")
+->selectRaw("{$dateFormat} as mois, COUNT(id) as total_visites")
 ->groupBy('mois')
 ->orderBy('mois')
 )->get();
@@ -136,12 +146,12 @@ DB::table('visites')
 
     public function getStatusLabelsProperty(): array
     {
-        return $this->getStatusDistribution()->pluck('statut')->toArray();
+        return collect($this->getStatusDistribution())->pluck('statut')->toArray();
     }
 
     public function getStatusDataProperty(): array
     {
-        return $this->getStatusDistribution()->pluck('nombre')->map(fn($amount) => (int) $amount)->toArray();
+        return collect($this->getStatusDistribution())->pluck('nombre')->map(fn($amount) => (int) $amount)->toArray();
     }
 
     protected function getStatusDistribution()
@@ -151,7 +161,7 @@ DB::table('visites')
 
         return Cache::remember($cacheKey, 300, function () use ($filters) {
             $query = $this->applyFilters(DB::table('visites')->select('statut', DB::raw('COUNT(id) as nombre')));
-            return $query->groupBy('statut')->orderByDesc('nombre')->get();
+            return $query->groupBy('statut')->orderByDesc('nombre')->get()->map(fn($item) => (array) $item)->toArray();
         });
     }
 
@@ -180,7 +190,9 @@ DB::table('visites')
             return $query->groupBy('users.id', 'users.name')
                 ->orderByDesc('total_visites')
                 ->limit(5)
-                ->get();
+                ->get()
+                ->map(fn($item) => (array) $item)
+                ->toArray();
         });
     }
 

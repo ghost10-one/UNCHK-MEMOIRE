@@ -13,10 +13,10 @@
 
 /* ── Variables CSS Mode Clair ───────────────────────────────── */
 :root {
-    --color-primary:       #1D9E75;
-    --color-primary-50:    #ECFDF7;
-    --color-primary-100:   #D1FAE9;
-    --color-primary-600:   #157F5E;
+    --color-primary:       #1B64F6;
+    --color-primary-50:    #EFF6FF;
+    --color-primary-100:   #DBEAFE;
+    --color-primary-600:   #1557D6;
     --color-secondary:     #0EA5A5;
     --color-success:       #22C55E;
     --color-danger:        #EF4444;
@@ -87,8 +87,8 @@
     }
 
     ::selection {
-        background-color: #D1FAE9;
-        color: #11543F;
+        background-color: #DBEAFE;
+        color: #1E40AF;
     }
 }
 

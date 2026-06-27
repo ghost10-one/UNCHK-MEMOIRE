@@ -44,24 +44,24 @@
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-            Se connecter <span class="ml-2">→</span>
+        <button type="submit" class="w-full flex justify-center items-center gap-2 py-3.5 px-4 border border-transparent rounded-2xl shadow-md shadow-blue-500/20 text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+            Se connecter <span>→</span>
         </button>
     </form>
 
     <!-- Demo Accounts Block -->
-    <!-- <div class="mt-8 bg-gray-50 rounded-xl p-5 border border-gray-100">
-        <h3 class="text-xs font-semibold text-gray-900 uppercase tracking-wider mb-3">Comptes de démonstration :</h3>
-        <ul class="text-sm text-gray-500 space-y-2">
+    <div class="mt-6 bg-slate-50/80 rounded-2xl p-4 border border-slate-100 text-left">
+        <h3 class="text-xs font-semibold text-slate-700 mb-2">Comptes de démonstration :</h3>
+        <ul class="text-xs text-slate-500 space-y-1 font-mono">
             <li>• delegue@medrep.com / demo1234</li>
             <li>• manager@medrep.com / demo1234</li>
             <li>• pro@medrep.com / demo1234</li>
         </ul>
-    </div> -->
+    </div>
 
     <!-- Registration Link -->
-    <p class="mt-8 text-center text-sm text-gray-500">
+    <p class="mt-6 text-center text-sm text-slate-500">
         Vous n'avez pas de compte ? 
-        <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:text-blue-500">Inscription</a>
+        <a href="{{ route('register') }}" class="font-bold text-blue-600 hover:text-blue-700">Inscription</a>
     </p>
 </x-guest-layout>

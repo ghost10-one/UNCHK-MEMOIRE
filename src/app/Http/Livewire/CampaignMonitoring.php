@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\KPI;
+
+use App\Models\Sample;
 
 class CampaignMonitoring extends Component
 {
@@ -18,6 +20,12 @@ public $statsGlobales = [];
 public $visitesParMois = [];
 public $distributionStatuts = [];
 public $topDelegues = [];
+
+public $totalDistribue = 0;
+public $totalRemaining = 0;
+public $progress = 0;
+public $alertStyle = '';
+public $alertMessage = '';
 
 public function mount()
 {
@@ -53,6 +61,31 @@ $this->distributionStatuts = [
 
 // Récupère les top délégués
 $this->topDelegues = KPI::topDelegues(5)->toArray();
+
+// Récupère les informations des échantillons (stock)
+$totalInitial = Sample::sum('initial_quantity') ?? 0;
+$this->totalRemaining = Sample::sum('remaining_quantity') ?? 0;
+$this->totalDistribue = max(0, $totalInitial - $this->totalRemaining);
+
+if ($totalInitial === 0) {
+    $this->progress = 0;
+} else {
+    $this->progress = min(100, (int) round(($this->totalDistribue / $totalInitial) * 100));
+}
+
+if ($this->totalRemaining === 0) {
+    $this->alertStyle = 'bg-red-50 text-red-700';
+    $this->alertMessage = 'Stock épuisé';
+} elseif ($this->totalRemaining < 50) {
+    $this->alertStyle = 'bg-amber-50 text-amber-700';
+    $this->alertMessage = 'Stock critique';
+} elseif ($this->totalRemaining < 150) {
+    $this->alertStyle = 'bg-blue-50 text-blue-700';
+    $this->alertMessage = 'Stock faible';
+} else {
+    $this->alertStyle = 'bg-blue-50 text-blue-700';
+    $this->alertMessage = 'Stock stable';
+}
 }
 
 public function resetFilters()

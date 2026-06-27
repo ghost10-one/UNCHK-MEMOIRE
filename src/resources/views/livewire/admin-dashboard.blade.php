@@ -14,9 +14,9 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">Zone</label>
             <select wire:model="zone_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 <option value="">Toutes</option>
-                 @foreach($zones as $zone)
-
-@endforeach
+                @foreach($zones as $zone)
+                    <option value="{{ $zone->id }}">{{ $zone->name }}</option>
+                @endforeach
             </select>
         </div>
 
@@ -89,10 +89,10 @@
             @forelse($this->topDelegues as $index => $delegue)
                 <div class="flex items-center justify-between pb-2 border-b border-gray-50 last:border-none">
                     <div class="flex items-center space-x-3">
-                        <span class="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 font-bold text-xs">{{ $index + 1 }}</span>
-                        <span class="text-sm font-medium text-gray-700">{{ $delegue->name }}</span>
+                        <span class="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 font-bold text-xs">{{ $loop->iteration }}</span>
+                        <span class="text-sm font-medium text-gray-700">{{ data_get($delegue, 'name') }}</span>
                     </div>
-                    <span class="text-sm font-semibold text-gray-900">{{ $delegue->total_visites }} visites</span>
+                    <span class="text-sm font-semibold text-gray-900">{{ data_get($delegue, 'total_visites') }} visites</span>
                 </div>
             @empty
                 <p class="text-sm text-gray-500 text-center py-4">Aucune donnée disponible</p>

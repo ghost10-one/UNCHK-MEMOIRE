@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto space-y-8">
             
             <div>
-                <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">Rapports</h1>
+                <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">Rapports </h1>
                 <p class="text-slate-500 text-sm mt-1">Consultez et téléchargez vos rapports d'activité</p>
             </div>
 

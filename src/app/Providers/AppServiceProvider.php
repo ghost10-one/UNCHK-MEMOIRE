@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Http\Livewire\AdminDashboard;
 use App\Models\Campaign;
 use App\Models\User;
-use App\Models\Visit;
+use App\Models\Visite;
 use App\Policies\CampaignPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\VisitPolicy;

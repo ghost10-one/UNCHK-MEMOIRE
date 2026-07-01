@@ -1,59 +1,22 @@
 <?php
 
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Support\Facades\Route;
+$app = new Illuminate\Foundation\Application(
+    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
+);
 
-use Illuminate\Http\Request;
+$app->singleton(
+    Illuminate\Contracts\Http\Kernel::class,
+    App\Http\Kernel::class
+);
 
-return Application::configure(basePath: dirname(__DIR__))
-    ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
-        commands: __DIR__.'/../routes/console.php',
-        health: '/up',
-        then: function () {
-            Route::middleware(['web', 'auth', 'admin'])
-                ->prefix('admin')
-                ->name('admin.')
-                ->group(base_path('routes/admin.php'));
+$app->singleton(
+    Illuminate\Contracts\Console\Kernel::class,
+    App\Console\Kernel::class
+);
 
-            Route::middleware(['web', 'auth', 'manager'])
-                ->prefix('manager')
-                ->name('manager.')
-                ->group(base_path('routes/manager.php'));
+$app->singleton(
+    Illuminate\Contracts\Debug\ExceptionHandler::class,
+    App\Exceptions\Handler::class
+);
 
-            Route::middleware(['web', 'auth', 'role:delegate'])
-                ->prefix('delegate')
-                ->name('delegate.')
-                ->group(base_path('routes/delegate.php'));
-
-            Route::middleware(['web', 'auth', 'role:pro_santé'])
-                ->prefix('praticien')
-                ->name('praticien.')
-                ->group(base_path('routes/praticien.php'));
-        },
-    )
-    ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->api(prepend: [
-            \Illuminate\Http\Middleware\HandleCors::class,
-        ]);
-
-        $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
-            'admin' => \App\Http\Middleware\AdminMiddleware::class,
-            'manager' => \App\Http\Middleware\ManagerMiddleware::class,
-        ]);
-
-         
-    })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->shouldRenderJsonWhen(function (Request $request, \Throwable $e) {
-            if ($request->is('api/*')) {
-                return true;
-            }
-
-            return $request->expectsJson();
-        });
-    })->create();
+return $app;

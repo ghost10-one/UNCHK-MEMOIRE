@@ -26,7 +26,7 @@
         <!-- Email Address -->
         <div>
             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input id="email" class="block w-full rounded-lg border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500 sm:text-sm" type="email" name="email" value="{{ old('email') }}" placeholder="exemple@medrep.com" required autocomplete="username" />
+            <input id="email" class="block w-full rounded-lg border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500 sm:text-sm" type="email" name="email" value="{{ old('email') }}" placeholder="exemple@sama-sante.com" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 

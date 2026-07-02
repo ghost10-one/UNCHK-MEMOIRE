@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'MedRep') }}</title>
+        <title>{{ config('app.name', 'Sama-Sante') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -22,7 +22,7 @@
                 <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-extrabold text-2xl shadow-lg shadow-blue-500/30">
                     +
                 </div>
-                <span class="text-3xl font-extrabold tracking-tight text-slate-900">MedRep</span>
+                <span class="text-3xl font-extrabold tracking-tight text-slate-900">Sama-Sante</span>
             </div>
 
             <!-- Content -->

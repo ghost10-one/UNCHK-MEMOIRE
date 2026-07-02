@@ -12,7 +12,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">Tableau de bord Administrateur</h1>
-                    <p class="text-slate-500 text-sm mt-1">Supervision globale de la plateforme MedRep</p>
+                    <p class="text-slate-500 text-sm mt-1">Supervision globale de la plateforme Sama-Sante</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <a href="{{ route('campaigns.create') }}" class="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md shadow-blue-500/20 transition-all">

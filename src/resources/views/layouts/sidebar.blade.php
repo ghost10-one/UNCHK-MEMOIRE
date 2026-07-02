@@ -7,7 +7,7 @@
                 <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-2xl shadow-md shadow-blue-500/20">
                     +
                 </div>
-                <span class="text-2xl font-extrabold text-slate-900 tracking-tight">MedRep</span>
+                <span class="text-2xl font-extrabold text-slate-900 tracking-tight">Sama-Sante</span>
             </a>
             
             <!-- Close Sidebar Button (Mobile) -->

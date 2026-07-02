@@ -1,4 +1,5 @@
 <?php
+
 use App\Jobs\SendScheduledReportJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;

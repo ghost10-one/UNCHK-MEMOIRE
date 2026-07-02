@@ -14,7 +14,7 @@
         <!-- Email Address -->
         <div>
             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input id="email" class="block w-full rounded-lg border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500 sm:text-sm" type="email" name="email" value="{{ old('email') }}" placeholder="exemple@medrep.com" required autofocus autocomplete="username" />
+            <input id="email" class="block w-full rounded-lg border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500 sm:text-sm" type="email" name="email" value="{{ old('email') }}" placeholder="exemple@sama-sante.com" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
@@ -53,9 +53,9 @@
     <div class="mt-6 bg-slate-50/80 rounded-2xl p-4 border border-slate-100 text-left">
         <h3 class="text-xs font-semibold text-slate-700 mb-2">Comptes de démonstration :</h3>
         <ul class="text-xs text-slate-500 space-y-1 font-mono">
-            <li>• delegue@medrep.com / demo1234</li>
-            <li>• manager@medrep.com / demo1234</li>
-            <li>• pro@medrep.com / demo1234</li>
+            <li>• delegue@sama-sante.com / demo1234</li>
+            <li>• manager@sama-sante.com / demo1234</li>
+            <li>• pro@sama-sante.com / demo1234</li>
         </ul>
     </div>
 

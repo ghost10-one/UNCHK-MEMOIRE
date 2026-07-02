@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\User;
 use App\Models\Zone;
-
+use App\Models\Visite;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 class Campaign extends Model
 {
     protected $fillable = [
@@ -41,8 +42,13 @@ class Campaign extends Model
         return $this->belongsTo(Zone::class);
     }
 
-    public function delegues(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'campaign_user', 'campaign_id', 'user_id');
-    }
+     public function delegues(): BelongsToMany
+{
+return $this->belongsToMany(User::class, 'campaign_user', 'campaign_id', 'user_id');
+}
+
+public function visites(): HasMany
+{
+return $this->hasMany(Visite::class, 'campagne_id');
+}
 }

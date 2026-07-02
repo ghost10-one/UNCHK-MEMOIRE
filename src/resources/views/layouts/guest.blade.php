@@ -14,15 +14,15 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased bg-gray-50 flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <body class="font-sans text-slate-900 antialiased bg-gradient-to-br from-blue-50 via-slate-50 to-blue-100/40 flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         
-        <div class="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
+        <div class="w-full max-w-md bg-white shadow-xl shadow-blue-900/5 rounded-3xl p-8 sm:p-10 border border-slate-100/80">
             <!-- Header Logo -->
-            <div class="flex items-center gap-3 mb-8">
-                <div class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center font-bold text-xl shadow-sm">
+            <div class="flex justify-center items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-extrabold text-2xl shadow-lg shadow-blue-500/30">
                     +
                 </div>
-                <span class="text-2xl font-bold tracking-tight text-gray-900">MedRep</span>
+                <span class="text-3xl font-extrabold tracking-tight text-slate-900">MedRep</span>
             </div>
 
             <!-- Content -->

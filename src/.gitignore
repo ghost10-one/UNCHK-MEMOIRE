@@ -31,3 +31,5 @@ Dockerfile
 Dockerfile.dev
 Dockerfile.prod
 Dockerfile.test
+.vercel
+.env*

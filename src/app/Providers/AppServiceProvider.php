@@ -11,9 +11,9 @@ use App\Policies\UserPolicy;
 use App\Policies\VisitPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use App\Models\Message;
 use App\Policies\MessagePolicy;
 use Livewire\Livewire;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +30,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Campaign::class, CampaignPolicy::class);
         Gate::policy(Visit::class, VisitPolicy::class);

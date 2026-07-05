@@ -4,6 +4,15 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/migrate', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return nl2br(\Illuminate\Support\Facades\Artisan::output());
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
+});
+
 Route::get('/', function () {
     return view('landing');
 });

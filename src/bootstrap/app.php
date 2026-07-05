@@ -49,6 +49,9 @@ return Application::configure(basePath: dirname(__DIR__))
          
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->reportable(function (\Throwable $e) {
+            echo "FATAL EXCEPTION: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine();
+        });
         $exceptions->shouldRenderJsonWhen(function (Request $request, \Throwable $e) {
             if ($request->is('api/*')) {
                 return true;
